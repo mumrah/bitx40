@@ -31,7 +31,44 @@ Calibration can still be done in the old fashioned way by using the CAL button (
 The tuning range setting can be 'hard coded' by editing lines 34-36 and adapting the values to your needs.
 
 ## PIN LAYOUT
-https://github.com/amunters/bitx40/blob/master/raduino_pin_layout.png
+
+![Raduino pin layout](https://github.com/amunters/bitx40/blob/master/raduino_pin_layout.png)
+
+### Connector P1 (8 pin):
+
+* A0 (black): PTTSense
+* A1 (brown): Key, "dit"
+* A2 (red): CAL
+* A3 (orange): Function Button
+* GND (yellow)
+* +5V (green)
+* A6 (blue): unused
+* A7 (purple): Tuning Pot
+
+### Connector P3 (16 pin)
+
+The first 11 pins have no headers (pads only):
+
+* D7: TX-RX
+* D6: CW Carrier
+* D5: CW Side Tone
+* D4: CW SPOT Button
+* D3: Key, "dah"
+* Unused
+* Unused
+* Unused
+* Unused
+* Unused
+* Unused
+
+The 5 pin header
+
+* GND (black)
+* GND (brown)
+* CLK2 (red)
+* +5V (orange)
+* Unused (yellow)
+
 
 ## PTT SENSE WIRING:
 Connect pin A0 (connector P1, black wire) via a 10K resistor to the output of U3 (LM7805 regulator) on the BITX40 board.
