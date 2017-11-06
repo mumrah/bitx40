@@ -16,3 +16,8 @@ void toggleSPLIT();
 void resetVFOs();
 void swapVFOs();
 int knob_position();
+
+void si5351bx_init();
+void si5351bx_setfreq(uint8_t clknum, uint32_t fout);
+void i2cWrite(uint8_t reg, uint8_t val);
+void i2cWriten(uint8_t reg, uint8_t *vals, uint8_t vcnt);
