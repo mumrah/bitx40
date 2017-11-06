@@ -1,19 +1,23 @@
 ## User instructions for Raduino_v1.27
 
-IMPORTANT: This sketch version requires the library "PinChangeInterrupt" for interrupt handling. Use your IDE to install
+**IMPORTANT**: This sketch version requires the library "PinChangeInterrupt" for interrupt handling. Use your IDE to install
 it before compiling this sketch.
 
 After a version update all calibration data, drive level settings, etc will be reset to 'factory' values.
 Before updating note down your cal values etc. After the update use the Function Button to set them back again.
 Without any hardware modifications the sketch provides basic LSB functionality. Depending on the user's choice,
 additional functionality provided by this software can be activated by installing the related (minimal) hardware mods.
-See the table at https://github.com/amunters/bitx40/blob/master/hardware%20modification%20overview.PNG showing which
-mods are required for each function. Details of each mod are described below.
+See the table below showing which mods are required for each function. Details of each mod are described below.
+
+![Table of hardware modifications](https://github.com/amunters/bitx40/blob/master/hardware%20modification%20overview.PNG)
 
 ## 10-TURN TUNING POT
+
 The default frequency span of the standard supplied 1-turn tuning pot is only 50 kHz.
 If you install a 10-turn pot instead you can extend the span for full 40m band coverage.
-https://github.com/amunters/bitx40/blob/master/Vishay%20100K%2C%2010-turn%20pot%20wire%20up.jpg
+
+![Image of 10-turn pot hookup](https://github.com/amunters/bitx40/blob/master/Vishay%20100K%2C%2010-turn%20pot%20wire%20up.jpg)
+
 Using the Function Button, go to the SETTINGS menu and set the desired pot span.
 
 ## FUNCTION BUTTON WIRING:
