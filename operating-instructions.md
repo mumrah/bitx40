@@ -104,8 +104,7 @@ The built-in keyer provides Iambic mode A and 'bug'-mode (Vibroplex emulation) f
 
 The sketch supports Capacitive Touch functionality. With this feature it is possible to use touch sensors instead of a
 mechanical morse key or paddle. Straight key as well as automatic keyer operation is possible via the touch sensors.
-
-[![Raduino Capacitive Touch Keyer Demo](https://img.youtube.com/vi/9MWM6UVy9k4/0.jpg)](https://www.youtube.com/watch?v=9MWM6UVy9k4)
+See the following demo: https://www.youtube.com/watch?v=9MWM6UVy9k4
 
 A minimal modification (add four resistors) is required for this function.
 
@@ -128,10 +127,11 @@ Note: When the touch keyer is enabled, normal paddle operation is not possible. 
 the touch sensor sensitivity to 0 (touch sensor OFF).
 
 ## CW-CARRIER WIRING:
+
 This is required for CW operation (or when you want to generate a carrier for tuning)
 Connect a wire from Raduino ouput D6 (connector P3, pin 15), via a 10K series resistor, to the input of the mixer.
 
-See https://github.com/amunters/bitx40/blob/master/CW-CARRIER%20wiring.png
+![CW Carrier Wiring](https://github.com/amunters/bitx40/blob/master/CW-CARRIER%20wiring.png)
 
 When the key is down ouput D6 will be HIGH. This injects some DC current into the mixer so that it becomes unbalanced.
 As a result a CW carrier will be generated.
@@ -145,16 +145,22 @@ The CW-CARRIER is only required for CW functionality. If you don't install this 
 will still work normally.
 
 ## CW SIDE TONE WIRING:
+
 A side tone is available at Raduino output D5 (connector P3, pin 14). This signal can be fed to the speaker/headphones
 in parallel to the output from the existing audio amplifier.
-See https://github.com/amunters/bitx40/blob/master/sidetone%20wiring.png
+
+![CW Side Tone Wiring](https://github.com/amunters/bitx40/blob/master/sidetone%20wiring.png)
+
 The desired side tone pitch can be set using the Function Button in the SETTINGS menu.
 The CW-side tone is only used for CW operation. If you don't install this line everything else
 will still work normally.
 
 ## TX-RX WIRING:
-See https://github.com/amunters/bitx40/blob/master/TX-RX%20line%20wiring.png
+
+![TX-RX Wiring](https://github.com/amunters/bitx40/blob/master/TX-RX%20line%20wiring.png)
+
 This is required for CW operation.
+
 When the key is down output D7 (connector P3, pin 15) will be HIGH. It will only go LOW again when the key has been up for at
 least 350 ms (this timeout value can be changed via the SETTINGS menu).
 This signal is used to drive an NPN transistor which is connected in parallel to the existing PTT switch, so that it will
@@ -164,6 +170,7 @@ back of it).
 (The PTT bypass transistor may be used in the future for VOX functionality as well).
 
 ## CW SPOT/FINE TUNE Button:
+
 Connect a momentary pushbutton between pin D4 (connector P3) and ground.
 Arduino's internal pull-up resistors are used, therefore do NOT install an external pull-up resistor!
 When operating CW it is important that both stations transmit their carriers on the same frequency.
@@ -179,11 +186,13 @@ the other station's signal to be exactly on the same frequency (zero beat).
 still possible).
 
 ## DIAL LOCK FUNCTION
+
 Press the Function Button and then the SPOT button simultanuously to lock the dial.
 When the dial is locked tuning will be disabled, PTT and CW is still possible.
 Press the Function Button again to unlock.
 
 ## SPURIOUS BURST PREVENTION
+
 In order to prevent that a spurious burst is emitted when switching from RX to TX, a short delay (TX_DELAY) is applied.
 By default the TX_DELAY is set to 65 ms. The delay time can be adjusted by editing line 71 as necessary.
 
@@ -192,19 +201,24 @@ By default the TX_DELAY is set to 65 ms. The delay time can be adjusted by editi
 Several functions are available with just one pushbutton.
 Certain menu options will not appear when the related hardware mods are not installed.
 
+### Operating Mode
+
 In normal operation mode:
-1 short press - toggle VFO A/B
-2 short presses - RIT on (PTT sense is required for this function) (press FB again to switch RIT off)
-3 short presses - toggle SPLIT on/off (PTT sense is required for this function)
-4 short presses - switch mode (rotate through LSB-USB-CWL-CWU)
-5 short presses - start frequency SCAN mode
-6 short presses - start VFO A/B monitoring mode
-long press (> 1 second) - VFO A=B
+
+* 1 short press - toggle VFO A/B
+* 2 short presses - RIT on (PTT sense is required for this function) (press FB again to switch RIT off)
+* 3 short presses - toggle SPLIT on/off (PTT sense is required for this function)
+* 4 short presses - switch mode (rotate through LSB-USB-CWL-CWU)
+* 5 short presses - start frequency SCAN mode
+* 6 short presses - start VFO A/B monitoring mode
+* long press (> 1 second) - VFO A=B
 
 When you press the Fbutton VERY long (>3 seconds) you will enter the SETTINGS menu.
 In the SETTINGS menu:
+
+### Settings Mode
  
-1 short press - set frequency SCAN parameters (lower limit, upper limit, step size, step delay)
+1 short press sets frequency SCAN parameters (lower limit, upper limit, step size, step delay)
 
  - using the tuning pot, set the desired lower frequency scan limit
  - press the FB
@@ -287,24 +301,27 @@ long press (>1 second) - return to the NORMAL mode
 
 All user settings are stored in EEPROM and retrieved during startup.
 
-When you keep the Fbutton pressed during power on all user settings will be erased and set back to "factory" values:
-VFO calibration value: 0
-VFO calibration offset (USB): 1500 Hz
-VFO drive level (LSB): 4mA
-VFO drive level (USB): 8mA
-Minimum frequency: 7000 kHz
-Maximum frequency: 7300 kHz
-Tuning pot span: 50 kHz
-Mode LSB for both VFO A and B
-CW side tone: 800 Hz
-CW key-type: Straight key
-Touch sensors: OFF
-Auto-space: OFF
-semiQSK: ON
-QSK delay: 350 ms
-Lower scan limit: 7100 kHz
-Upper scan limit: 7150 kHz
-Scan step: 1 kHz
-Scan step delay: 500 ms
+When you keep the Fbutton pressed during power on all user settings will be erased and set back to "factory" values.
+
+### Factory Settings
+
+* VFO calibration value: 0
+* VFO calibration offset (USB): 1500 Hz
+* VFO drive level (LSB): 4mA
+* VFO drive level (USB): 8mA
+* Minimum frequency: 7000 kHz
+* Maximum frequency: 7300 kHz
+* Tuning pot span: 50 kHz
+* Mode LSB for both VFO A and B
+* CW side tone: 800 Hz
+* CW key-type: Straight key
+* Touch sensors: OFF
+* Auto-space: OFF
+* semiQSK: ON
+* QSK delay: 350 ms
+* Lower scan limit: 7100 kHz
+* Upper scan limit: 7150 kHz
+* Scan step: 1 kHz
+* Scan step delay: 500 ms
 
 A warning message "VFO uncalibrated" will be displayed until you recalibrate the VFO again.
