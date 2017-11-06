@@ -34,7 +34,7 @@ The tuning range setting can be 'hard coded' by editing lines 34-36 and adapting
 
 ![Raduino pin layout](https://github.com/amunters/bitx40/blob/master/raduino_pin_layout.png)
 
-### Connector P1 (8 pin):
+### Connector P1 (8 pin)
 
 * A0 (black): PTTSense
 * A1 (brown): Key, "dit"
@@ -54,12 +54,12 @@ The first 11 pins have no headers (pads only):
 * D5: CW Side Tone
 * D4: CW SPOT Button
 * D3: Key, "dah"
-* Unused
-* Unused
-* Unused
-* Unused
-* Unused
-* Unused
+* ??: Unused
+* ??: Unused
+* ??: Unused
+* ??: Unused
+* ??: Unused
+* ??: Unused
 
 The 5 pin header
 
@@ -67,27 +67,32 @@ The 5 pin header
 * GND (brown)
 * CLK2 (red)
 * +5V (orange)
-* Unused (yellow)
+* ?? (yellow): Unused
 
 
 ## PTT SENSE WIRING:
+
 Connect pin A0 (connector P1, black wire) via a 10K resistor to the output of U3 (LM7805 regulator) on the BITX40 board.
-See https://github.com/amunters/bitx40/blob/master/PTT%20SENSE%20wiring.png
+
+![PTT Sense wiring](https://github.com/amunters/bitx40/blob/master/PTT%20SENSE%20wiring.png)
+
 When the PTT is not pressed (RX mode), the regulator will be off, so pin A0 will see 0V (LOW).
 When the PTT is pressed (TX mode), the regulator will be on, so pin A0 will see +5V (HIGH).
 The PTT SENSE is required for the CW, RIT, SPLIT functionality, and for disabling frequency updating during TX
 (to prevent "FM-ing"). If you don't install the PTT sense, LSB and USB operation will still work normally.
 
 ## CONNECTING A STRAIGHT MORSE KEY or 'TUNE' BUTTON:
+
 A straight key (or external electronic keyer) can be connected to Raduino pin A1 (connector P1, brown wire).
-It is recommended to install a 1K series resistor to protect the Arduino input.
-When the key is up (open) pin A1 will be HIGH.
+It is recommended to install a 1K series resistor to protect the Arduino input. When the key is up (open) pin A1 will be HIGH.
 When the key is down (closed, shorted to ground) pin A1 will be LOW, and a carrier will be transmitted.
+
 You could also wire up a simple push button instead of connecting a morse key. The generated CW carrier can be used for
 tuning up your antenna. In that case please note that you will be transmitting a carrier at full duty cycle, therefore don't
 keep the tune button pressed for too long to prevent overheating the final!
 
 ## AUTOMATIC KEYER - CONNECTING A PADDLE:
+
 The Raduino is set up for straight key operation by default. If you want to use the automatic keyer, go to the SETTINGS menu
 and to 'CW parameters' => 'Key-type' and select 'paddle', 'rev. paddle' (for left-handed operators), 'bug', or 'rev. bug'.
 Connect the 'dit' contact to Raduino pin A1 (connector P1, brown wire).
@@ -96,12 +101,15 @@ It is recommended to install 1K series resistors to protect the Arduino inputs.
 The built-in keyer provides Iambic mode A and 'bug'-mode (Vibroplex emulation) functionality and the paddles can be reversed.
 
 ## CAPACITIVE TOUCH KEYER:
+
 The sketch supports Capacitive Touch functionality. With this feature it is possible to use touch sensors instead of a
 mechanical morse key or paddle. Straight key as well as automatic keyer operation is possible via the touch sensors.
-See https://www.youtube.com/watch?v=9MWM6UVy9k4 for a demonstration.
 
-A minimal modification (add four resistors) is required for this function, for details
-see https://github.com/amunters/bitx40/blob/master/capacitive%20touch%20keyer%20modification.png
+![Raduino Capacitive Touch Keyer Demo](https://www.youtube.com/watch?v=9MWM6UVy9k4)
+
+A minimal modification (add four resistors) is required for this function.
+
+![Capacitive Touch Keyer Mod](https://github.com/amunters/bitx40/blob/master/capacitive%20touch%20keyer%20modification.png)
 
 The capacitive touch sensors are disabled by default. To enable them, go to the SETTINGS menu and to 'CW parameters' =>
 'Touch sensor', and use the tuning knob to set the desired touch sensor sensitivity.
