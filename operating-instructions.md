@@ -1,6 +1,6 @@
 ## User instructions for Raduino_v1.27
 
-**IMPORTANT**: This sketch version requires the library "PinChangeInterrupt" for interrupt handling. Use your IDE to install
+**IMPORTANT**: This sketch version requires the library ["PinChangeInterrupt"](https://playground.arduino.cc/Main/PinChangeInterrupt) for interrupt handling. Use your IDE to install
 it before compiling this sketch.
 
 After a version update all calibration data, drive level settings, etc will be reset to 'factory' values.
@@ -18,9 +18,10 @@ If you install a 10-turn pot instead you can extend the span for full 40m band c
 
 ![Image of 10-turn pot hookup](https://github.com/amunters/bitx40/blob/master/Vishay%20100K%2C%2010-turn%20pot%20wire%20up.jpg)
 
-Using the Function Button, go to the SETTINGS menu and set the desired pot span.
+Using the Function Button, go to the SETTINGS menu and [set the desired pot span](#tuning-range).
 
 ## FUNCTION BUTTON WIRING:
+
 Connect a momentary pushbutton between pin A3 (connector P1, orange wire) and ground.
 Arduino's internal pull-up resistors are used, therefore do NOT install an external pull-up resistor!
 
@@ -213,11 +214,13 @@ In normal operation mode:
 * 6 short presses - start VFO A/B monitoring mode
 * long press (> 1 second) - VFO A=B
 
-When you press the Fbutton VERY long (>3 seconds) you will enter the SETTINGS menu.
-In the SETTINGS menu:
 
 ### Settings Mode
+
+To enter SETTINGS menu, press and hold the Function Button for a VERY long (>3 seconds).
  
+#### Frequency Scan
+
 1 short press sets frequency SCAN parameters (lower limit, upper limit, step size, step delay)
 
  - using the tuning pot, set the desired lower frequency scan limit
@@ -228,7 +231,9 @@ In the SETTINGS menu:
  - press the FB
  - using the tuning pot, set the desired scan step delay (also used for A/B monitoring mode)
  - press the FB again to save the settings
- 
+
+#### CW Configuration
+
 2 short presses - set CW paramaters (sidetone pitch, CW-key type, semiQSK on/off, QSK delay)
    (only available when PTTsense line is installed)
 
@@ -246,6 +251,8 @@ In the SETTINGS menu:
  - using the tuning pot, set the desired sidetone pitch
  - press the FB
 
+#### VFO Calibration, LSB
+
 3 short presses - VFO frequency calibration in LSB mode
 
   - use another transceiver to generate a carrier at a known frequency (for example 7100.0 kHz)
@@ -255,6 +262,8 @@ In the SETTINGS menu:
   - go into the LSB calibration mode (3 short press)
   - using the tuning pot, adjust the correction value (ppm) for exactly zero beat
   - press the Function Button again to save the setting
+
+#### VFO Calibration, USB
   
 4 short presses - VFO frequency calibration in USB mode
 
@@ -266,6 +275,8 @@ In the SETTINGS menu:
   - go into the USB calibration mode (4 short presses)
   - using the tuning pot, adjust the USB offset for exactly zero beat
   - press the Function Button again to save the setting
+
+#### VFO Drive Level, LSB
   
 5 short presses - set VFO drive level in LSB mode
 
@@ -274,7 +285,9 @@ In the SETTINGS menu:
   - the default drive level in LSB mode is 4mA
   - using the tuning pot, try different drive levels (2,4,6,8 mA) to minimize the strength of the birdie
   - press the FB again to save the setting
-  
+
+#### VFO Drive Level, USB  
+
 6 short presses - set VFO drive level in USB mode
 
   - tune to a weak signal
@@ -286,6 +299,8 @@ In the SETTINGS menu:
   These caps attenuate the VFO signal at higher frequencies. They're actually only needed for the analog VFO
   and can safely be removed if you use the Raduino DDS instead of the analog VFO.
 
+#### Tuning Range
+
 7 short presses - set tuning range (min frequency, max frequency, pot span)
 
   - using the tuning pot, set the minimum tuning frequency and press the FB
@@ -296,14 +311,16 @@ In the SETTINGS menu:
     recommended value: 50 kHz for a 1-turn pot, 200 kHz for a 10-turn pot
     (if the radio is mainly used for CW: a pot span of 10-25 kHz is recommended)
   - press the FB again to save the setting
+
+#### Exit Settings
  
-long press (>1 second) - return to the NORMAL mode
+One long press (>1 second) will exit the SETTINGs menu and return to normal [operating mode](#operating-mode)
 
 All user settings are stored in EEPROM and retrieved during startup.
 
-When you keep the Fbutton pressed during power on all user settings will be erased and set back to "factory" values.
-
 ### Factory Settings
+
+To reset all used settings to "factory" values, press and hold the Function button during power on. The factory settings are:
 
 * VFO calibration value: 0
 * VFO calibration offset (USB): 1500 Hz
