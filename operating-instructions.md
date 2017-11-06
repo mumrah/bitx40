@@ -105,7 +105,7 @@ The built-in keyer provides Iambic mode A and 'bug'-mode (Vibroplex emulation) f
 The sketch supports Capacitive Touch functionality. With this feature it is possible to use touch sensors instead of a
 mechanical morse key or paddle. Straight key as well as automatic keyer operation is possible via the touch sensors.
 
-![Raduino Capacitive Touch Keyer Demo](https://www.youtube.com/watch?v=9MWM6UVy9k4)
+[![Raduino Capacitive Touch Keyer Demo](https://img.youtube.com/vi/9MWM6UVy9k4/0.jpg)](https://www.youtube.com/watch?v=9MWM6UVy9k4)
 
 A minimal modification (add four resistors) is required for this function.
 
