@@ -28,6 +28,9 @@
    switching the CAL wire to ground.
 */
 
+#include <Arduino.h>
+#include "main.h"
+
 // *** USER PARAMETERS ***
 
 // tuning range parameters
