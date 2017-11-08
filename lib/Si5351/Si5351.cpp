@@ -30,13 +30,13 @@
 #include "Si5351.h"
 #include <stdio.h>
 
-extern uint32_t si5351bx_vcoa;  // 25mhzXtal calibrate
-extern uint8_t  si5351bx_rdiv;             // 0-7, CLK pin sees fout/(2**rdiv)
-extern uint8_t  si5351bx_drive[3]; // 0=2ma 1=4ma 2=6ma 3=8ma for CLK 0,1,2
-extern uint8_t  si5351bx_clken;
+uint32_t si5351bx_vcoa = (SI5351BX_XTAL*SI5351BX_MSA);  // 25mhzXtal calibrate
+uint8_t  si5351bx_rdiv = 0;             // 0-7, CLK pin sees fout/(2**rdiv)
+uint8_t  si5351bx_drive[3] = {1, 1, 1}; // 0=2ma 1=4ma 2=6ma 3=8ma for CLK 0,1,2
+uint8_t  si5351bx_clken = 0xFF;         // Private, all CLK output drivers off
 
 void si5351bx_init() {                  // Call once at power-up, start PLLA
-  uint8_t reg;  uint32_t msxp1;
+  uint32_t msxp1;
   Wire.begin();
   i2cWrite(149, 0);                     // SpreadSpectrum off
   i2cWrite(3, si5351bx_clken);          // Disable all CLK output drivers

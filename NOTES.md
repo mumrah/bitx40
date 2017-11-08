@@ -17,3 +17,58 @@ What mode are we in
 Are we TX'ing?
 
 Various inputs: CW key, Knob turn, Function button
+
+```
+void shiftBase();
+void setFrequency();
+void save_frequency();
+void set_CWparams();
+void set_tune_range();
+void set_drive_level(byte level);
+void calibrate_touch_pads();
+void SetSideBand(byte drivelevel);
+void VFOdrive();
+void scan_params();
+void toggleRIT();
+void toggleMode();
+void toggleSPLIT();
+void resetVFOs();
+void swapVFOs();
+int knob_position();
+```
+
+User Configuration:
+* VFO A/B: frequency, mode, RIT, vfo drive, vfo scan
+* CW: ...
+* Split mode (RX on VFO A, TX on VFO B)
+
+
+
+
+
+
+
+
+
+```
+
+class VFOConfig {
+  Mode mode;
+  int ritHz;
+  int drive;
+  long scanStart;
+  long scanStop;
+}
+
+class VFO {
+  VFOConfig config;
+  LO lo;
+  void setFrequency(long hz) {
+    // account for side band, correction factory, etc
+    long corrected = config.correct(hz);
+    lo.setFrequency(corrected);
+  }  
+}
+
+
+```
