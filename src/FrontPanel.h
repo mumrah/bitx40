@@ -4,7 +4,6 @@
 #define UI_MODE_CONFIG_MENU 0x01
 #define UI_MODE_CONFIG_SELECT 0x02
 
-
 struct UIState {
   long last_encoder_position;
   long last_turn_ms;
@@ -26,7 +25,7 @@ struct UIState {
 };
 
 void setupFrontPanel(long initialFrequency);
-void pollFrontPanel();
+UIState pollFrontPanel();
 
 void onKnobRotate(bool is_clockwise);
 void onClick();

@@ -73,6 +73,7 @@ void renderUI() {
 
 void setupFrontPanel(long initialFrequency) {
   uiState.display_frequency = initialFrequency;
+
   pinMode(A3, INPUT_PULLUP);
   lcd.begin(16, 2);
   lcd.createChar(0, s1);
@@ -104,7 +105,7 @@ void setupFrontPanel(long initialFrequency) {
 }
 
 // Read from knobs and buttons, determine which UI events have occurred
-void pollFrontPanel() {
+UIState pollFrontPanel() {
   long new_encoder_position = myEnc.read();
   long encoder_diff = new_encoder_position - uiState.last_encoder_position;
   if(abs(encoder_diff) > 3) {
@@ -147,6 +148,7 @@ void pollFrontPanel() {
   }
 
   renderUI();
+  return uiState;
 }
 
 void doTune(bool is_clockwise) {

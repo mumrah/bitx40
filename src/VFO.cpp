@@ -44,6 +44,12 @@ void setScanRange(byte vfo, uint16_t scanStart, uint16_t scanStop) {
   vfoConfig.scanStop = scanStop;
 }
 
+
+void setFrequency(byte vfo, uint32_t freq_hz) {
+  VFOConfig vfoConfig = selectVFO(vfo);
+  vfoConfig.freq_hz = freq_hz;
+}
+
 /**
    The setFrequency is a little tricky routine, it works differently for USB and LSB
    The BITX BFO is permanently set to lower sideband, (that is, the crystal frequency
@@ -68,19 +74,27 @@ void setScanRange(byte vfo, uint16_t scanStart, uint16_t scanStop) {
    between the transmitting and receiving station (RXshift)
    The desired sidetone frequency can be set in the SETTINGS menu.
 */
+long last_frequency = 0;
 
-void setFrequency(byte vfo, uint32_t hz) {
+void updateVFO(byte vfo) {
   VFOConfig vfoConfig = selectVFO(vfo);
+
   int RXshift = 0;
   if(vfoConfig.mode & 2) {
     RXshift = CW_SHIFT;
   }
-  Serial.print("Freq: "); Serial.println(hz);
+
+  long new_frequency;
   if (vfoConfig.mode & 1) {   // if we are in UPPER side band mode
-    //si5351bx_setfreq(2, (BITX_BFO_FREQ + hz - RXshift + vfoConfig.ritHz + vfoConfig.fineHz - OFFSET_USB_SHIFT));
-    Serial.print("LO: "); Serial.println(BITX_BFO_FREQ + hz - RXshift + vfoConfig.ritHz + vfoConfig.fineHz - OFFSET_USB_SHIFT);
+    new_frequency = BITX_BFO_FREQ + vfoConfig.freq_hz - RXshift + vfoConfig.ritHz + vfoConfig.fineHz - OFFSET_USB_SHIFT;
+
   } else {            // if we are in LOWER side band mode
-    //si5351bx_setfreq(2, (BITX_BFO_FREQ - hz - RXshift - vfoConfig.ritHz - vfoConfig.fineHz));
-    Serial.print("LO: "); Serial.println(BITX_BFO_FREQ - hz - RXshift - vfoConfig.ritHz - vfoConfig.fineHz);
+    new_frequency = BITX_BFO_FREQ - vfoConfig.freq_hz - RXshift - vfoConfig.ritHz - vfoConfig.fineHz;
+  }
+
+  // Update, maybe
+  if(new_frequency != last_frequency) {
+    si5351bx_setfreq(2, new_frequency);
+    last_frequency = new_frequency;
   }
 }
