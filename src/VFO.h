@@ -42,6 +42,7 @@ struct VFOConfig {
   uint32_t scanStop = MAX_FREQ;
 };
 
+void vfoInit();
 void setFrequency(byte vfo, uint32_t freq_hz);
 void setMode(byte vfo, byte mode);
 void setMode(byte vfo, byte mode, uint8_t drive);

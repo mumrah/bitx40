@@ -105,7 +105,7 @@ void setupFrontPanel(long initialFrequency) {
 }
 
 // Read from knobs and buttons, determine which UI events have occurred
-UIState pollFrontPanel() {
+UIState* pollFrontPanel() {
   long new_encoder_position = myEnc.read();
   long encoder_diff = new_encoder_position - uiState.last_encoder_position;
   if(abs(encoder_diff) > 3) {
@@ -148,7 +148,7 @@ UIState pollFrontPanel() {
   }
 
   renderUI();
-  return uiState;
+  return &uiState;
 }
 
 void doTune(bool is_clockwise) {

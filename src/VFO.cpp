@@ -5,17 +5,21 @@
 VFOConfig vfo_A;
 VFOConfig vfo_B;
 
-VFOConfig selectVFO(byte vfo) {
+void vfoInit() {
+  si5351bx_init();
+}
+
+VFOConfig* selectVFO(byte vfo) {
   if((vfo & 1) == VFO_A) {
-    return vfo_A;
+    return &vfo_A;
   } else {
-    return vfo_B;
+    return &vfo_B;
   }
 }
 
 void setMode(byte vfo, byte mode) {
-  VFOConfig vfoConfig = selectVFO(vfo);
-  if(vfoConfig.mode & 1) { // USB
+  VFOConfig* vfoConfig = selectVFO(vfo);
+  if(vfoConfig->mode & 1) { // USB
     setMode(vfo, mode, USB_DRIVE);
   } else {
     setMode(vfo, mode, LSB_DRIVE);
@@ -23,31 +27,31 @@ void setMode(byte vfo, byte mode) {
 }
 
 void setMode(byte vfo, byte mode, uint8_t drive) {
-  VFOConfig vfoConfig = selectVFO(vfo);
-  vfoConfig.mode = mode;
-  vfoConfig.drive_mA = drive;
+  VFOConfig* vfoConfig = selectVFO(vfo);
+  vfoConfig->mode = mode;
+  vfoConfig->drive_mA = drive;
 }
 
 void setRitHz(byte vfo, int ritHz) {
-  VFOConfig vfoConfig = selectVFO(vfo);
-  vfoConfig.ritHz = ritHz;
+  VFOConfig* vfoConfig = selectVFO(vfo);
+  vfoConfig->ritHz = ritHz;
 }
 
 void setFineTuneHz(byte vfo, int fineHz) {
-  VFOConfig vfoConfig = selectVFO(vfo);
-  vfoConfig.fineHz = constrain(fineHz, -1000, 1000);
+  VFOConfig* vfoConfig = selectVFO(vfo);
+  vfoConfig->fineHz = constrain(fineHz, -1000, 1000);
 }
 
 void setScanRange(byte vfo, uint16_t scanStart, uint16_t scanStop) {
-  VFOConfig vfoConfig = selectVFO(vfo);
-  vfoConfig.scanStart = scanStart;
-  vfoConfig.scanStop = scanStop;
+  VFOConfig* vfoConfig = selectVFO(vfo);
+  vfoConfig->scanStart = scanStart;
+  vfoConfig->scanStop = scanStop;
 }
 
 
 void setFrequency(byte vfo, uint32_t freq_hz) {
-  VFOConfig vfoConfig = selectVFO(vfo);
-  vfoConfig.freq_hz = freq_hz;
+  VFOConfig* vfoConfig = selectVFO(vfo);
+  vfoConfig->freq_hz = freq_hz;
 }
 
 /**
@@ -77,23 +81,24 @@ void setFrequency(byte vfo, uint32_t freq_hz) {
 long last_frequency = 0;
 
 void updateVFO(byte vfo) {
-  VFOConfig vfoConfig = selectVFO(vfo);
+  VFOConfig* vfoConfig = selectVFO(vfo);
 
   int RXshift = 0;
-  if(vfoConfig.mode & 2) {
+  if(vfoConfig->mode & 2) {
     RXshift = CW_SHIFT;
   }
 
   long new_frequency;
-  if (vfoConfig.mode & 1) {   // if we are in UPPER side band mode
-    new_frequency = BITX_BFO_FREQ + vfoConfig.freq_hz - RXshift + vfoConfig.ritHz + vfoConfig.fineHz - OFFSET_USB_SHIFT;
+  if (vfoConfig->mode & 1) {   // if we are in UPPER side band mode
+    new_frequency = BITX_BFO_FREQ + vfoConfig->freq_hz - RXshift + vfoConfig->ritHz + vfoConfig->fineHz - OFFSET_USB_SHIFT;
 
   } else {            // if we are in LOWER side band mode
-    new_frequency = BITX_BFO_FREQ - vfoConfig.freq_hz - RXshift - vfoConfig.ritHz - vfoConfig.fineHz;
+    new_frequency = BITX_BFO_FREQ - vfoConfig->freq_hz - RXshift - vfoConfig->ritHz - vfoConfig->fineHz;
   }
 
   // Update, maybe
   if(new_frequency != last_frequency) {
+    Serial.println(new_frequency);
     si5351bx_setfreq(2, new_frequency);
     last_frequency = new_frequency;
   }

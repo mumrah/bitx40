@@ -25,7 +25,7 @@ struct UIState {
 };
 
 void setupFrontPanel(long initialFrequency);
-UIState pollFrontPanel();
+UIState* pollFrontPanel();
 
 void onKnobRotate(bool is_clockwise);
 void onClick();
