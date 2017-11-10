@@ -11,7 +11,12 @@ Encoder myEnc(A1, A2);
 UIState uiState;
 
 void renderUI() {
+  if(!uiState.dirty) {
+    return;
+  }
+
   if(uiState.ui_mode == UI_MODE_RUN) {
+    // pretty-print the frequency, e.g. 7.123.456
     char buf[7], out[9];
     memset(buf, 0, 7);
     memset(out, 0, 9);
@@ -51,7 +56,6 @@ void renderUI() {
         glyph |= 0x01;
       }
       lcd.write(glyph);
-      //lcd.print(glyph);
     }
   } else if(uiState.ui_mode == UI_MODE_CONFIG_MENU || uiState.ui_mode == UI_MODE_CONFIG_SELECT) {
     lcd.setCursor(0, 0);
@@ -71,7 +75,7 @@ void renderUI() {
   }
 }
 
-void setupFrontPanel(long initialFrequency) {
+void initFrontPanel(long initialFrequency) {
   uiState.display_frequency = initialFrequency;
 
   pinMode(A3, INPUT_PULLUP);
@@ -85,6 +89,7 @@ void setupFrontPanel(long initialFrequency) {
   lcd.createChar(6, rx);
   lcd.createChar(7, tx);
 
+  // TODO placeholder s-meter
   lcd.setCursor(0, 1);
   lcd.write((uint8_t)0);
   lcd.write((uint8_t)0);
@@ -146,8 +151,6 @@ UIState* pollFrontPanel() {
   } else {
     uiState.last_button_state = new_button_state;
   }
-
-  renderUI();
   return &uiState;
 }
 
@@ -164,6 +167,7 @@ void doTune(bool is_clockwise) {
 }
 
 void onKnobRotate(bool is_clockwise) {
+  uiState.dirty = true;
   switch(uiState.ui_mode) {
     case UI_MODE_RUN:
       doTune(is_clockwise);
@@ -201,14 +205,15 @@ void onKnobRotate(bool is_clockwise) {
 }
 
 void onButtonDown() {
-
+  uiState.dirty = true;
 }
 
 void onButtonUp() {
-
+  uiState.dirty = true;
 }
 
 void onDoubleClick() {
+  uiState.dirty = true;
   switch(uiState.ui_mode) {
     case UI_MODE_RUN:
       uiState.ui_mode = UI_MODE_CONFIG_MENU;
@@ -221,6 +226,7 @@ void onDoubleClick() {
 }
 
 void onClick() {
+  uiState.dirty = true;
   switch(uiState.ui_mode) {
     case UI_MODE_RUN:
       // Change tuning step

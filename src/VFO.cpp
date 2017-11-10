@@ -5,7 +5,7 @@
 VFOConfig vfo_A;
 VFOConfig vfo_B;
 
-void vfoInit() {
+void initVFO() {
   si5351bx_init();
 }
 

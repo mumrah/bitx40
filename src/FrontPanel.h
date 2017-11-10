@@ -5,6 +5,8 @@
 #define UI_MODE_CONFIG_SELECT 0x02
 
 struct UIState {
+  bool dirty = false;
+
   long last_encoder_position;
   long last_turn_ms;
   long last_button_down_ms;
@@ -20,12 +22,14 @@ struct UIState {
   uint32_t tune_step_hz = 10000;
 
   // Config mode state
+  // TODO actually get the VFOConfig in here
   uint8_t menu_idx = 0;
   char menu_vfo = 'A';
 };
 
-void setupFrontPanel(long initialFrequency);
+void initFrontPanel(long initialFrequency);
 UIState* pollFrontPanel();
+void renderUI();
 
 void onKnobRotate(bool is_clockwise);
 void onClick();
