@@ -80,6 +80,9 @@ void initFrontPanel(long initialFrequency) {
 
   pinMode(A3, INPUT_PULLUP);
   lcd.begin(16, 2);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Raduino de KM4NKU");
   lcd.createChar(0, s1);
   lcd.createChar(1, s1_bar);
   lcd.createChar(2, s4);
@@ -106,6 +109,7 @@ void initFrontPanel(long initialFrequency) {
   lcd.print((char)0xFF);
   lcd.print((char)0xFF);
   lcd.print(" ");
+
   lcd.write((uint8_t)6);
 }
 

@@ -7,6 +7,7 @@ void setup() {
   Serial.println("Raduino de KM4NKU");
   initFrontPanel(DEFAULT_FREQ);
   initVFO();
+  delay(1000);
 }
 
 void loop() {
