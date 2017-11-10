@@ -2,55 +2,38 @@
 #include <Si5351.h>
 #include "VFO.h"
 
-VFOConfig vfo_A;
-VFOConfig vfo_B;
-
 void initVFO() {
   si5351bx_init();
 }
 
-VFOConfig* selectVFO(byte vfo) {
-  if((vfo & 1) == VFO_A) {
-    return &vfo_A;
-  } else {
-    return &vfo_B;
-  }
-}
-
-void setMode(byte vfo, byte mode) {
-  VFOConfig* vfoConfig = selectVFO(vfo);
+void setMode(VFOConfig* vfoConfig, byte mode) {
   if(vfoConfig->mode & 1) { // USB
-    setMode(vfo, mode, USB_DRIVE);
+    setMode(vfoConfig, mode, USB_DRIVE);
   } else {
-    setMode(vfo, mode, LSB_DRIVE);
+    setMode(vfoConfig, mode, LSB_DRIVE);
   }
 }
 
-void setMode(byte vfo, byte mode, uint8_t drive) {
-  VFOConfig* vfoConfig = selectVFO(vfo);
+void setMode(VFOConfig* vfoConfig, byte mode, uint8_t drive) {
   vfoConfig->mode = mode;
   vfoConfig->drive_mA = drive;
 }
 
-void setRitHz(byte vfo, int ritHz) {
-  VFOConfig* vfoConfig = selectVFO(vfo);
+void setRitHz(VFOConfig* vfoConfig, int ritHz) {
   vfoConfig->ritHz = ritHz;
 }
 
-void setFineTuneHz(byte vfo, int fineHz) {
-  VFOConfig* vfoConfig = selectVFO(vfo);
+void setFineTuneHz(VFOConfig* vfoConfig, int fineHz) {
   vfoConfig->fineHz = constrain(fineHz, -1000, 1000);
 }
 
-void setScanRange(byte vfo, uint16_t scanStart, uint16_t scanStop) {
-  VFOConfig* vfoConfig = selectVFO(vfo);
+void setScanRange(VFOConfig* vfoConfig, uint16_t scanStart, uint16_t scanStop) {
   vfoConfig->scanStart = scanStart;
   vfoConfig->scanStop = scanStop;
 }
 
 
-void setFrequency(byte vfo, uint32_t freq_hz) {
-  VFOConfig* vfoConfig = selectVFO(vfo);
+void setFrequency(VFOConfig* vfoConfig, uint32_t freq_hz) {
   vfoConfig->freq_hz = freq_hz;
 }
 
@@ -80,9 +63,7 @@ void setFrequency(byte vfo, uint32_t freq_hz) {
 */
 long last_frequency = 0;
 
-void updateVFO(byte vfo) {
-  VFOConfig* vfoConfig = selectVFO(vfo);
-
+void updateVFO(VFOConfig* vfoConfig) {
   int RXshift = 0;
   if(vfoConfig->mode & 2) {
     RXshift = CW_SHIFT;
@@ -98,7 +79,6 @@ void updateVFO(byte vfo) {
 
   // Update, maybe
   if(new_frequency != last_frequency) {
-    Serial.println(new_frequency);
     si5351bx_setfreq(2, new_frequency);
     last_frequency = new_frequency;
   }

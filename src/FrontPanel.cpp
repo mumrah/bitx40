@@ -10,6 +10,16 @@ Encoder myEnc(A1, A2);
 
 UIState uiState;
 
+void printMenu(const char* menu) {
+  lcd.print(menu);
+  if(uiState.ui_mode == UI_MODE_CONFIG_SELECT) {
+    lcd.print((char)0x7E);
+  } else {
+    lcd.print(":");
+  }
+  lcd.print(" ");
+}
+
 void renderUI() {
   if(!uiState.dirty) {
     return;
@@ -20,7 +30,7 @@ void renderUI() {
     char buf[7], out[9];
     memset(buf, 0, 7);
     memset(out, 0, 9);
-    ultoa(uiState.display_frequency, buf, DEC);
+    ultoa(uiState.vfoConfig->freq_hz, buf, DEC);
 
     strcat(out, "");
     out[0] = buf[0];
@@ -29,9 +39,33 @@ void renderUI() {
     strcat(out, ".");
     strncat(out, &buf[4], 3);
     lcd.setCursor(0, 0);
-    lcd.print("A ");
+    switch(uiState.vfo_select) {
+      case VFO_A:
+        lcd.print("A ");
+        break;
+      case VFO_B:
+        lcd.print("B ");
+        break;
+      case VFO_SPLIT:
+        lcd.print("S ");
+        break;
+    }
     lcd.print(out);
-    lcd.print("  LSB");
+
+    switch(uiState.vfoConfig->mode) {
+      case LSB:
+        lcd.print("  LSB");
+        break;
+      case USB:
+        lcd.print("  USB");
+        break;
+      case CWL:
+        lcd.print("  CWL");
+        break;
+      case CWU:
+        lcd.print("  CWU");
+        break;
+    }
 
     // S-meter
     lcd.setCursor(0, 1);
@@ -61,28 +95,53 @@ void renderUI() {
     lcd.setCursor(0, 0);
     switch(uiState.menu_idx) {
       case 0:
-        lcd.print("VFO: ");
-        lcd.print(uiState.menu_vfo);
-        lcd.print("          ");
+        printMenu("VFO");
+        switch(uiState.vfo_select) {
+          case VFO_A:
+            lcd.print("A          ");
+            break;
+          case VFO_B:
+            lcd.print("B          ");
+            break;
+          case VFO_SPLIT:
+            lcd.print("Split      ");
+            break;
+        }
+        break;
+      case 1:
+        // Side band
+        lcd.setCursor(0, 0);
+        printMenu("Side Band");
+        switch(uiState.vfoConfig->mode) {
+          case LSB:
+            lcd.print("LSB  ");
+            break;
+          case USB:
+            lcd.print("USB  ");
+            break;
+          case CWL:
+            lcd.print("CWL  ");
+            break;
+          case CWU:
+            lcd.print("CWU  ");
+            break;
+        }
         break;
       default:
-      lcd.print("Menu ");
-      lcd.print(uiState.menu_idx);
-      lcd.print("        ");
+        // Placeholder
+        printMenu("Menu");
+        lcd.print(uiState.menu_idx);
+        lcd.print("        ");
+        lcd.setCursor(0, 1);
+        lcd.print("                ");
+        break;
     }
-    lcd.setCursor(0, 1);
-    lcd.print("                ");
   }
 }
 
-void initFrontPanel(long initialFrequency) {
-  uiState.display_frequency = initialFrequency;
-
+void initFrontPanel() {
   pinMode(A3, INPUT_PULLUP);
   lcd.begin(16, 2);
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Raduino de KM4NKU");
   lcd.createChar(0, s1);
   lcd.createChar(1, s1_bar);
   lcd.createChar(2, s4);
@@ -92,29 +151,45 @@ void initFrontPanel(long initialFrequency) {
   lcd.createChar(6, rx);
   lcd.createChar(7, tx);
 
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Raduino KM4NKU  ");
+
   // TODO placeholder s-meter
   lcd.setCursor(0, 1);
   lcd.write((uint8_t)0);
   lcd.write((uint8_t)0);
   lcd.write((uint8_t)0);
-  lcd.write((uint8_t)1);
-  lcd.write((uint8_t)1);
-  lcd.write((uint8_t)6);
   lcd.write((uint8_t)2);
   lcd.write((uint8_t)2);
   lcd.write((uint8_t)2);
+  lcd.write((uint8_t)4);
+  lcd.write((uint8_t)4);
+  lcd.write((uint8_t)4);
   lcd.print((char)0xFF);
   lcd.print((char)0xFF);
   lcd.print((char)0xFF);
   lcd.print((char)0xFF);
   lcd.print((char)0xFF);
   lcd.print(" ");
-
   lcd.write((uint8_t)6);
+
+  /*
+  for(int i=0; i<3; i++) {
+    lcd.setCursor(15, 1);
+    lcd.write((uint8_t)7);
+    delay(500);
+    lcd.setCursor(15, 1);
+    lcd.write((uint8_t)6);
+    delay(500);
+  }
+  */
 }
 
 // Read from knobs and buttons, determine which UI events have occurred
-UIState* pollFrontPanel() {
+UIState* pollFrontPanel(VFOConfig* vfoConfig) {
+  uiState.vfoConfig = vfoConfig;
+
   long new_encoder_position = myEnc.read();
   long encoder_diff = new_encoder_position - uiState.last_encoder_position;
   if(abs(encoder_diff) > 3) {
@@ -136,7 +211,7 @@ UIState* pollFrontPanel() {
     Serial.println("onButtonDown");
     uiState.last_button_state = new_button_state;
     uiState.is_button_down = true;
-    if((millis() - uiState.last_button_down_ms) < 300) {
+    if((millis() - uiState.last_button_down_ms) < UI_DOUBLE_CLICK_TIMEOUT) {
       Serial.println("onDoubleClick");
       uiState.is_double_click = true;
       onDoubleClick();
@@ -164,10 +239,27 @@ void doTune(bool is_clockwise) {
     tune_adjust = 1;
   }
   if(is_clockwise > 0) {
-    uiState.display_frequency += tune_adjust;
+    uiState.vfoConfig->freq_hz += tune_adjust;
   } else {
-    uiState.display_frequency -= tune_adjust;
+    uiState.vfoConfig->freq_hz -= tune_adjust;
   }
+}
+
+uint8_t incOrDecEnum(uint8_t current_value, uint8_t max_value, bool is_clockwise) {
+  if(is_clockwise) {
+    if(current_value == max_value) {
+      current_value = 0;
+    } else {
+      current_value += 1;
+    }
+  } else {
+    if(current_value == 0) {
+      current_value = max_value;
+    } else {
+      current_value -= 1;
+    }
+  }
+  return current_value;
 }
 
 void onKnobRotate(bool is_clockwise) {
@@ -195,13 +287,11 @@ void onKnobRotate(bool is_clockwise) {
       switch(uiState.menu_idx) {
         case 0:
           // VFO
-          if((uiState.menu_vfo == 'A' && is_clockwise) || (uiState.menu_vfo == 'S' && !is_clockwise)) {
-            uiState.menu_vfo = 'B';
-          } else if((uiState.menu_vfo == 'B' && is_clockwise) || (uiState.menu_vfo == 'A' && !is_clockwise)) {
-            uiState.menu_vfo = 'S';
-          } else if((uiState.menu_vfo == 'S' && is_clockwise) || (uiState.menu_vfo == 'B' && !is_clockwise)) {
-            uiState.menu_vfo = 'A';
-          }
+          uiState.vfo_select = incOrDecEnum(uiState.vfo_select, VFO_SPLIT, is_clockwise);
+          break;
+        case 1:
+          // Side Band
+          uiState.vfoConfig->mode = incOrDecEnum(uiState.vfoConfig->mode, CWU, is_clockwise);
           break;
       }
       break;

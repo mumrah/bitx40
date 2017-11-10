@@ -1,8 +1,11 @@
 #include <Arduino.h>
+#include "VFO.h"
 
 #define UI_MODE_RUN 0x00
 #define UI_MODE_CONFIG_MENU 0x01
 #define UI_MODE_CONFIG_SELECT 0x02
+
+#define UI_DOUBLE_CLICK_TIMEOUT 200
 
 struct UIState {
   bool dirty = false;
@@ -17,18 +20,20 @@ struct UIState {
   bool is_press_and_turn = false;
 
   byte ui_mode = UI_MODE_RUN;
+
   // Run mode state
-  long display_frequency;
   uint32_t tune_step_hz = 10000;
 
   // Config mode state
-  // TODO actually get the VFOConfig in here
   uint8_t menu_idx = 0;
-  char menu_vfo = 'A';
+
+  // VFO related stuff
+  VFOConfig* vfoConfig;
+  uint8_t vfo_select = VFO_A;
 };
 
-void initFrontPanel(long initialFrequency);
-UIState* pollFrontPanel();
+void initFrontPanel();
+UIState* pollFrontPanel(VFOConfig* vfoConfig);
 void renderUI();
 
 void onKnobRotate(bool is_clockwise);

@@ -1,3 +1,6 @@
+#ifndef VFO_H
+#define VFO_H
+
 #include <Arduino.h>
 #include <stdio.h>
 
@@ -31,22 +34,25 @@
 
 #define VFO_A 0x0
 #define VFO_B 0x1
+#define VFO_SPLIT 0x2
 
 struct VFOConfig {
   uint32_t freq_hz = DEFAULT_FREQ;
   byte mode = LSB;
-  int ritHz = 0;
-  int fineHz = 0;
+  int ritHz = 0; // TODO what range? 3kHz?
+  int fineHz = 0; // TODO what range?
   uint8_t drive_mA = LSB_DRIVE;
   uint32_t scanStart = MIN_FREQ;
   uint32_t scanStop = MAX_FREQ;
 };
 
 void initVFO();
-void setFrequency(byte vfo, uint32_t freq_hz);
-void setMode(byte vfo, byte mode);
-void setMode(byte vfo, byte mode, uint8_t drive);
-void setRitHz(byte vfo, int ritHz);
-void setFineTuneHz(byte vfo, int fineHz);
-void setScanRange(byte vfo, uint16_t scanStart, uint16_t scanStop);
-void updateVFO(byte vfo);
+void setFrequency(VFOConfig* vfoConfig, uint32_t freq_hz);
+void setMode(VFOConfig* vfoConfig, byte mode);
+void setMode(VFOConfig* vfoConfig, byte mode, uint8_t drive);
+void setRitHz(VFOConfig* vfoConfig, int ritHz);
+void setFineTuneHz(VFOConfig* vfoConfig, int fineHz);
+void setScanRange(VFOConfig* vfoConfig, uint16_t scanStart, uint16_t scanStop);
+void updateVFO(VFOConfig* vfoConfig);
+
+#endif /* VFO_H */
