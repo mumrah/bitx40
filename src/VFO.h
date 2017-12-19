@@ -15,16 +15,17 @@
 #define USB 0x02
 #define CWU 0x03
 
-#define OFFSET_USB_SHIFT 1500
+#define CAL 1187 //1575                  // Initial VFO calibration value: 180 ppm
+#define OFFSET_USB_SHIFT 362     // USB offset in Hz
 #define CW_SHIFT 800              // RX shift in CW mode in Hz, equal to sidetone pitch [accepted range 200-1200 Hz]
 
-#define DRIVE_2mA 0x2
-#define DRIVE_4mA 0x4
-#define DRIVE_6mA 0x6
-#define DRIVE_8mA 0x8
+#define DRIVE_2mA 0x0
+#define DRIVE_4mA 0x1
+#define DRIVE_6mA 0x2
+#define DRIVE_8mA 0x3
 
-#define LSB_DRIVE 0x4
-#define USB_DRIVE 0x8
+#define LSB_DRIVE 0x1
+#define USB_DRIVE 0x2
 
 // frequency scanning parameters
 #define SCAN_START 7100           // Scan start frequency in kHz [accepted range MIN_FREQ - MAX_FREQ, see above]
@@ -37,13 +38,16 @@
 #define VFO_SPLIT 0x2
 
 struct VFOConfig {
+  byte version;
   uint32_t freq_hz = DEFAULT_FREQ;
   byte mode = LSB;
   int ritHz = 0; // TODO what range? 3kHz?
   int fineHz = 0; // TODO what range?
+  bool ritEnabled = false;
   uint8_t drive_mA = LSB_DRIVE;
   uint32_t scanStart = MIN_FREQ;
   uint32_t scanStop = MAX_FREQ;
+  int ppmCorr = CAL;
 };
 
 void initVFO();

@@ -75,8 +75,12 @@ void si5351bx_setfreq(uint8_t clknum, uint32_t fout) {  // Set a CLK to fout Hz
 }
 
 // Set the PPM correction for the VCO
-void si5351bx_setcorr(uint8_t corr) {
-  si5351bx_vcoa = (SI5351BX_XTAL * SI5351BX_MSA) + corr;
+void si5351bx_setcorr(int cal) {
+  si5351bx_vcoa = (SI5351BX_XTAL * SI5351BX_MSA) + (cal * 100L);
+}
+
+void si5351bx_setdrive(uint8_t drive) {
+  si5351bx_drive[2] = drive;
 }
 
 void i2cWrite(uint8_t reg, uint8_t val) {   // write reg via i2c

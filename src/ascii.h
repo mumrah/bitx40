@@ -1,6 +1,19 @@
 #include <Arduino.h>
 
-byte s1[8] = {
+#define RX_TX_GLYPH 0x07
+
+byte ASCII_BAR[8] = {
+	0b11111,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000
+};
+
+byte ASCII_S1[8] = {
 	0b00000,
 	0b00000,
 	0b00000,
@@ -11,7 +24,7 @@ byte s1[8] = {
 	0b11111
 };
 
-byte s1_bar[8] = {
+byte ASCII_S1_BAR[8] = {
 	0b11111,
 	0b00000,
 	0b00000,
@@ -22,7 +35,7 @@ byte s1_bar[8] = {
 	0b11111
 };
 
-byte s4[8] = {
+byte ASCII_S4[8] = {
 	0b00000,
 	0b00000,
 	0b00000,
@@ -33,7 +46,7 @@ byte s4[8] = {
 	0b11111
 };
 
-byte s4_bar[8] = {
+byte ASCII_S4_BAR[8] = {
 	0b11111,
 	0b00000,
 	0b00000,
@@ -44,7 +57,7 @@ byte s4_bar[8] = {
 	0b11111
 };
 
-byte s7[8] = {
+byte ASCII_S7[8] = {
 	0b00000,
 	0b00000,
 	0b11111,
@@ -55,7 +68,7 @@ byte s7[8] = {
 	0b11111
 };
 
-byte s7_bar[8] = {
+byte ASCII_S7_BAR[8] = {
 	0b11111,
 	0b00000,
 	0b11111,
@@ -66,7 +79,7 @@ byte s7_bar[8] = {
 	0b11111
 };
 
-byte rx[8] = {
+byte ASCII_RX[8] = {
 	0b11000,
 	0b10100,
 	0b11000,
@@ -77,7 +90,7 @@ byte rx[8] = {
 	0b00101
 };
 
-byte tx[8] = {
+byte ASCII_TX[8] = {
 	0b11100,
 	0b01000,
 	0b01000,

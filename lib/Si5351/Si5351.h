@@ -24,7 +24,8 @@
 
 void si5351bx_init();
 void si5351bx_setfreq(uint8_t clknum, uint32_t fout);
-void si5351bx_setcorr(uint8_t corr);
+void si5351bx_setcorr(int ppm);
+void si5351bx_setdrive(uint8_t drive); // 0=2mA, 1=4mA (default), 2=6mA, 3=8mA
 
 void i2cWrite(uint8_t reg, uint8_t val);
 void i2cWriten(uint8_t reg, uint8_t *vals, uint8_t vcnt);

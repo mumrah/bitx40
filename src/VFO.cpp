@@ -62,22 +62,36 @@ void setFrequency(VFOConfig* vfoConfig, uint32_t freq_hz) {
    The desired sidetone frequency can be set in the SETTINGS menu.
 */
 long last_frequency = 0;
+uint8_t last_drive = 0;
+int last_ppm = 0;
 
 void updateVFO(VFOConfig* vfoConfig) {
   int RXshift = 0;
-  if(vfoConfig->mode & 2) {
+  if(vfoConfig->mode & 0b01) {
     RXshift = CW_SHIFT;
   }
 
   long new_frequency;
-  if (vfoConfig->mode & 1) {   // if we are in UPPER side band mode
+  if (vfoConfig->mode & 0b10) {   // if we are in UPPER side band mode
     new_frequency = BITX_BFO_FREQ + vfoConfig->freq_hz - RXshift + vfoConfig->ritHz + vfoConfig->fineHz - OFFSET_USB_SHIFT;
-
   } else {            // if we are in LOWER side band mode
     new_frequency = BITX_BFO_FREQ - vfoConfig->freq_hz - RXshift - vfoConfig->ritHz - vfoConfig->fineHz;
   }
 
-  // Update, maybe
+  // Update drive, maybe
+  if(vfoConfig->drive_mA != last_drive) {
+    si5351bx_setdrive(vfoConfig->drive_mA);
+    last_drive = vfoConfig->drive_mA;
+  }
+
+  // Update the correlation, maybe
+  if(vfoConfig->ppmCorr != last_ppm) {
+    si5351bx_setcorr(vfoConfig->ppmCorr);
+    last_ppm = vfoConfig->ppmCorr;
+    last_frequency = 0;
+  }
+
+  // Update freq, maybe
   if(new_frequency != last_frequency) {
     si5351bx_setfreq(2, new_frequency);
     last_frequency = new_frequency;
